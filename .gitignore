@@ -1,0 +1,10 @@
+/.idea/
+random-weave-stripes.iml
+
+/bower_components/
+
+/development/
+
+/dist/
+
+/node_modules/
