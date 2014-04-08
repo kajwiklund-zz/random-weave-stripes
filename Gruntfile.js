@@ -24,12 +24,12 @@ module.exports = function (grunt) {
                     debug: true
                 },
                 files: {
-                    'development/js/<%= pkg.name %>.js': ['src/index.js']
+                    'development/js/<%= pkg.name %>.js': ['src/js/index.js']
                 }
             },
             dist: {
                 files: {
-                    'dist/js/<%= pkg.name %>.js': ['src/index.js']
+                    'dist/js/<%= pkg.name %>.js': ['src/js/index.js']
                 }
             }
         },
@@ -37,19 +37,34 @@ module.exports = function (grunt) {
         copy: {
             dev: {
                 files: [
-                    {src: ['bower_components/routie/dist/routie.min.js'], dest: './development/js/vendor/routie.min.js'},
-                    {src: ['bower_components/react/react-with-addons.js'], dest: './development/js/vendor/react-with-addons.js'},
-                    {src: ['bower_components/lodash/dist/lodash.min.js'], dest: './development/js/vendor/lodash.min.js'},
-                    {src: ['bower_components/normalize-css/normalize.css'], dest: './development/css/vendor/normalize.css'}
+                    {src: ['src/test.html'], dest: 'development/test.html'},
+                    {src: ['bower_components/routie/dist/routie.min.js'], dest: 'development/js/vendor/routie.min.js'},
+                    {src: ['bower_components/react/react-with-addons.js'], dest: 'development/js/vendor/react-with-addons.js'},
+                    {src: ['bower_components/lodash/dist/lodash.min.js'], dest: 'development/js/vendor/lodash.min.js'},
+                    {expand:true, cwd: 'bower_components/bootstrap/fonts/', src: ['*'], dest: 'development/style/vendor/bootstrap/fonts/'},
                 ]
             },
             dist: {
                 files: [
                     {src: ['bower_components/director/build/director.min.js'], dest: './dist/js/vendor/director.min.js'},
                     {src: ['bower_components/react/react-with-addons.min.js'], dest: './dist/js/vendor/react-with-addons.min.js'},
-                    {src: ['bower_components/lodash/dist/lodash.min.js'], dest: './development/js/vendor/lowdash.min.js'},
-                    {src: ['bower_components/normalize-css/normalize.css'], dest: './dist/css/vendor/normalize.css'}
+                    {src: ['bower_components/lodash/dist/lodash.min.js'], dest: './dist/js/vendor/lowdash.min.js'},
                 ]
+            }
+        },
+
+
+        less: {
+            dev: {
+                options: {
+                    compress: true,
+                    yuicompress: true,
+                    optimization: 2
+                },
+                files: {
+                    // target.css file: source.less file
+                    "development/style/main.css": "src/themes/main.less"
+                }
             }
         },
 
@@ -122,14 +137,15 @@ module.exports = function (grunt) {
   require('load-grunt-tasks')(grunt);
 
   grunt.registerTask('devBuild', [
-    'clean:dev',
     'copy:dev',
     'replace:dev',
     'browserify:dev',
-    'asciify',
+//    'asciify',
   ]);
 
   grunt.registerTask('dev', [
+    'clean:dev',
+    'less:dev',
     'devBuild',
     'connect:dev',
     'watch'

@@ -5,28 +5,67 @@ var Rnd = require('./rnd');
 var Layer = require('./data/layer');
 var Point = require('./data/point');
 
+var IconButton = require('./bootstrap/icon-button');
+
 arrayMove = function(array, from, to) {
     array.splice(to, 0, array.splice(from, 1)[0]);
 };
 
 var LayerInspector = React.createClass({
-    onChange: function (e) {
-        var newLayer  =  _.clone(this.props.layer);
-        newLayer.color = e.target.value;
-        this.props.onChange(newLayer);
+    onColorChange: function (e) {
+        this.onNewColorValue(e.target.value);
     },
 
     onSeedChange: function (e) {
+        this.onNewSeedValue(e.target.value);
+    },
+
+    onNewColorValue: function (val) {
         var newLayer  =  _.clone(this.props.layer);
-        newLayer.seed = e.target.value;
+        newLayer.color = val;
         this.props.onChange(newLayer);
     },
 
+    onNewSeedValue: function (val) {
+        var newLayer  =  _.clone(this.props.layer);
+        newLayer.seed = val;
+        this.props.onChange(newLayer);
+    },
+
+    onRandomColor: function () {
+        this.onNewColorValue(Rnd.color());
+    },
+    onRandomSeed: function () {
+        this.onNewSeedValue(Math.floor(Math.random()*90000 +10000));
+    },
+
+
+
     render: function () {
+        // todo: reusable form componenet
+
         return <div>
-            <div>Color: <input value={this.props.layer.color} onChange={this.onChange}/></div>
-            <div>Seed: <input value={this.props.layer.seed} onChange={this.onSeedChange}/></div>
-        </div>;
+                    <form role="form">
+                        <div className="form-group">
+                    <label for="layerColor">Color</label>
+                    <div className="input-group">
+                        <input id="layerColor" type="text" className="form-control input-sm" value={this.props.layer.color} onChange={this.onColorChange}/>
+                            <span className="input-group-btn">
+                                <button className="btn btn-default input-sm" type="button" onClick={this.onRandomColor}><span className="glyphicon glyphicon glyphicon-fire"></span></button>
+                            </span>
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label for="layerSeed">Seed</label>
+                        <div className="input-group">
+                            <input id="layerSeed" type="text" className="form-control input-sm" value={this.props.layer.seed} onChange={this.onSeedChange}/>
+                                <span className="input-group-btn">
+                                    <button className="btn btn-default input-sm" type="button" onClick={this.onRandomSeed}><span className="glyphicon glyphicon glyphicon-fire"></span></button>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
     }
 });
 
@@ -112,7 +151,7 @@ var LayerList = React.createClass({
 
             if(i == layerData.selected){
                 selectedLayer = layer;
-                style.border = "2px dashed white"
+                style.border = "3px dashed #272B30"
             }
 
             return <div style={style} onClick={this.onClick.bind(this, i)}></div>;
@@ -120,29 +159,28 @@ var LayerList = React.createClass({
         layers.reverse();
         var inspector;
         var actions = [];
+
+        actions.push(<IconButton icon="plus" className="btn-group-space" onClick={this.addLayer} />);
+
         if(selectedLayer) {
             inspector = <LayerInspector layer={selectedLayer} onChange={this.onLayerChange.bind(this, this.props.layerData.selected)}/>;
 
-            actions.push(['Up',this.moveUp, layerData.selected < layerData.layers.length-1]);
-            actions.push(['Down',this.moveDown, layerData.selected > 0]);
+            actions.push(<div className="btn-group btn-group-space">
+                <IconButton icon="arrow-up" onClick={this.moveUp} enabled={layerData.selected < layerData.layers.length-1}/>
+                <IconButton icon="arrow-down" onClick={this.moveDown} enabled={layerData.selected > 0}/>
+            </div>);
+            actions.push(<IconButton icon="trash" className="btn-group-space" onClick={this.removeLayer} />);
         }
 
-        actions = actions.map(function (action) {
-            if(action[2])
-                return <div onClick={action[1]}>{action[0]}</div>
-            else
-                return <div>-{action[0]}-</div>
-        });
-
-        return <div>
-            <h1>Layers</h1>
-            {layers}
-
+        return <div className="row">
+            <h4>Layers</h4>
+            <div className="h-spaced">
+                {layers}
+            </div>
+            <div className="h-spaced">
+                {actions}
+            </div>
             {inspector}
-            <hr/>
-            {actions}
-            <div onClick={this.addLayer}>Add Layer</div>
-            <div onClick={this.removeLayer}>Remove Layer</div>
         </div>
     }
 });

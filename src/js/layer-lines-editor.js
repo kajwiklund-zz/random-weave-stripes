@@ -3,6 +3,9 @@
 var MathUtils = require('./math-utils');
 var Point = require('./data/point');
 
+
+var IconButton = require('./bootstrap/icon-button');
+
 // todo: reuse?
 var changed= function (target, changes) {
     return _.extend(_.clone(target), changes);
@@ -183,7 +186,7 @@ var LayerLinesEditor = React.createClass({
         }.bind(this));
 
 
-        return <svg width={s.x} height={s.y} view onMouseDown={this.addPoint}>{editors}</svg>;
+        return <svg width={s.x} height={s.y} className="lineEditor" onMouseDown={this.addPoint}>{editors}</svg>;
     }
 });
 

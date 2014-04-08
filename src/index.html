@@ -1,42 +1,44 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>@@pkg_name</title>
-        <meta charset='utf-8'>
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-        <link href='/css/vendor/normalize.css' rel='stylesheet' type='text/css'>
-        <!--<link href='/css/@@pkg_name.css' rel='stylesheet' type='text/css'>-->
-        <style>
-            body{
-                margin: 20px;
-                color: #CDCDCD;
-                background-color: #2e2e2e;
-            }
-            a {
-                color: #CDCDCD;
-            }
-            svg{
-                background-color: #3d3d3d;
-            }
-            .editors, .pickers{
-                color: #CDCDCD;
-                float: left;
-            }
-            .pickers {
-                margin-left:10px;
-            }
-        </style>
-    </head>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Random Weave Stripes</title>
 
-    <body bgcolor="#2e2e2e" >
-        <div id="application">
-            <!-- ReactJS Application Renders Here -->
-        </div>
-        <script src="/js/vendor/lodash.min.js"></script>
-        <script src="/js/vendor/zepto.min.js"></script>
-        <script src="/js/vendor/react-with-addons.js"></script>
-        <script src="/js/vendor/routie.min.js"></script>
-        <script src="/js/@@pkg_name.js"></script>
-    </body>
+    <link href="style/main.css" rel="stylesheet">
+    <style>
+        .page-header-main{
+            margin-top: 0
+        }
+        .inspectorBox {
+            float:left; margin-right: 15px; width: 270px
+        }
+        .stripesAreaBox{
+            float:left;
+        }
+        .downloadButton{
+            margin-bottom: 5px
+        }
+        .h-spaced{
+            margin-bottom: 5px
+        }
+        .btn-group-space{
+            margin-right: 10px;
+        }
+        .lineEditor{
+            background-color: #3A3F44;
+        }
+    </style>
+</head>
+<body>
+<div id="application">
+    <!-- ReactJS Application Renders Here -->
+</div>
+
+<script src="/js/vendor/lodash.min.js"></script>
+<script src="/js/vendor/react-with-addons.js"></script>
+<script src="/js/vendor/routie.min.js"></script>
+<script src="/js/@@pkg_name.js"></script>
+</body>
 
 </html>

@@ -3,7 +3,26 @@
 
 var Application = require('./application');
 var ResultRenderer = require('./result-renderer');
+var Icon = require('./bootstrap/icon');
 var storage = require('./storage');
+
+
+var NavBar =React.createClass({
+    render: function () {
+        return <nav className="navbar navbar-default" role="navigation">
+            <div className="container-fluid">
+                <div className="navbar-header">
+                    <a className="navbar-brand" href="#"><Icon icon="fire"/>
+                    Random Weave Stripes</a>
+                </div>
+
+                <ul className="nav navbar-nav">
+                    <li className="active"><a href="#">Projects</a></li>
+                </ul>
+            </div>
+        </nav>
+    }
+});
 
 /**
  * Created by kajwi_000 on 2014-04-07.
@@ -56,24 +75,26 @@ var ProjectPicker = React.createClass({
             }
 
             return (<div>
-                        <h3>{makeLink(project.name)}</h3>
+                        <h4>{makeLink(project.name)}</h4>
                         {makeLink(preview)}
                 </div>
             );
         }.bind(this));
 
+        var page;
 
         if (this.state.currentId) {
-            return <Application id={this.state.currentId}/>;
+            page = <Application id={this.state.currentId}/>
         }
         else {
-
-            return <div>
-                <h1>Random Weave Projects</h1>
+            page = <div className="container-fluid">
+                <h1 className="page-header page-header-main">Saved projects</h1>
                 {projectViews}
-                <hr/><a onClick={this.createNew}>New Project</a>
+                <hr/><a className="btn btn-default" onClick={this.createNew}>New Project</a>
             </div>
         }
+
+        return <div><NavBar/>{page}</div>
     }
 });
 
