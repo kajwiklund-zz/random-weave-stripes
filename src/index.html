@@ -31,72 +31,17 @@
         .clear-fix {
             clear: both
         }
+        .hidden-file-input {
+            -moz-opacity:0 ;
+            filter:alpha(opacity: 0);
+            opacity: 0;
+        }
     </style>
 </head>
 <body>
 <div id="application">
     <!-- ReactJS Application Renders Here -->
 </div>
-
-<style>
-    form.example input {
-        background: url('pix/input_boxes.gif') no-repeat 0 -58px;
-        border: none;
-        width: 241px;
-        height: 20px;
-        padding-left: 3px;
-        padding-top: 3px;
-    }
-
-    form.example input:focus {
-        background-color: transparent;
-    }
-
-    form.example input.file {
-        width: 300px;
-        margin: 0;
-    }
-
-    form.example input.file.hidden {
-        position: relative;
-        text-align: right;
-        -moz-opacity:0 ;
-        filter:alpha(opacity: 0);
-        opacity: 0;
-        z-index: 2;
-    }
-
-    form.example div.fakefile {
-
-    }
-
-    form.example div.fakefile input {
-        margin-bottom: 5px;
-        margin-left: 0;
-    }
-
-    .prettyFile{
-        position: relative;
-        /*height: 30px;*/
-        /*width: 300px;*/
-    }
-
-    .prettyFile-file{
-        position: relative;
-        z-index: 2;
-    }
-
-    .prettyFile-fakefile{
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        /*width: 350px;*/
-        padding: 0;
-        margin: 0;
-        z-index: 1;
-        line-height: 90%;
-    }
-</style>
 
 <script src="js/vendor/lodash.min.js"></script>
 <script src="js/vendor/react-with-addons.js"></script>

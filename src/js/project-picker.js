@@ -53,9 +53,12 @@ var UploadForm = React.createClass({
     },
 
     render: function () {
-        return <form>
-                    <button className="btn btn-default" onClick={this.clickFile}><Icon icon="floppy-open"/> Import Project</button>
-                    <input type="file" ref="file" onChange={this.onSubmit} className="hidden"/>
+        var style={color:'white'};
+        return <form onSubmit={this.onSubmit}>
+                    <h4>Import Project</h4>
+
+                    <input type="file" ref="file" class="white-file" style={style} /><br/>
+                    <button className="btn btn-default"><Icon icon="floppy-open"/> Import</button>
                </form>
     }
 });
