@@ -234,16 +234,17 @@ var Application = React.createClass({
                 <br/>
                 <input type="checkbox" checkedLink={this.linkState('selectInLayerEditor')}/>
                 Allow Select
+                <br/><br/>
+                <div className="well">
+                    Shift+Click to add points
+                    <br/>
+                    Ctrl+Click to remove points
+                </div>
             </div>
+            <div className="clear-fix alert alert-warning"><strong>Warning!</strong> This is a work in progress thing. Don't expect anything to work and your data might disapear at any moment!</div>
         </div>
     }
 });
 
 
 module.exports = Application;
-
-
-//todo:
-//Hold Shift to add points
-//<br/>
-//Hold Ctrl to remove points
