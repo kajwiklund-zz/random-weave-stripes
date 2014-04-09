@@ -52,6 +52,12 @@ var KindInput = React.createClass({
 });
 
 var ProjectDownloads = React.createClass({
+    getFileName: function () {
+        var name = this.props.appState.name || "noname";
+        var filename = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        return filename;
+    },
+
     saveResult: function () {
         function hexToRgb(hex) {
             // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
@@ -68,9 +74,7 @@ var ProjectDownloads = React.createClass({
             } : null;
         }
 
-        var pom = document.createElement('a');
-
-        var result = stripes(this.props.layerData.layers, this.props.size.x);
+        var result = stripes(this.props.appState.layerData.layers, this.props.appState.size.x);
 
         var nl = "\r\n";
         var colorsArray = [];
@@ -94,9 +98,10 @@ var ProjectDownloads = React.createClass({
             data2 += (j + 1) + "=" + rgb.r + "," + rgb.g + "," + rgb.b + nl;
         }
 
-
+        var filename = s.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        var pom = document.createElement('a');
         pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data2 + data));
-        pom.setAttribute('download', "result.txt");
+        pom.setAttribute('download', this.getFileName() +"_result.txt");
         pom.click();
     },
 
@@ -104,7 +109,11 @@ var ProjectDownloads = React.createClass({
         alert("not implemented");
     },
     saveProject: function () {
-        alert("not implemented");
+        var pom = document.createElement('a');
+        pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.props.appState)));
+        pom.setAttribute('download', this.getFileName() +"_project.json");
+        pom.click();
+
     },
     render: function () {
         return <div>
@@ -158,14 +167,15 @@ var ProjectSizes = React.createClass({
 
 var InspectorBox = React.createClass({
     render: function () {
+        var appState = this.props.appState;
         return <div className="inspectorBox container-fluid">
-            <ProjectDownloads layerData={this.props.layerData} size={this.props.size}/>
-            <ProjectSizes  size={this.props.size}
-                editorSize={this.props.editorSize}
+            <ProjectDownloads appState={appState}/>
+            <ProjectSizes size={appState.size}
+                editorSize={appState.editorSize}
                 onSizeChanged={this.props.onSizeChanged}
                 onEditorSizeChange={this.props.onEditorSizeChange}/>
 
-            <LayerList layerData={this.props.layerData} size={this.props.size} onChange={this.props.onChange}/>
+            <LayerList layerData={appState.layerData} size={appState.size} onChange={this.props.onLayerDataChange}/>
         </div>
     }
 });
@@ -178,7 +188,7 @@ var Application = React.createClass({
         return storage.load(this.props.id);
     },
 
-    onChange: function (newLayerData) {
+    onLayerDataChange: function (newLayerData) {
         this.setState({layerData: newLayerData});
     },
 
@@ -214,14 +224,14 @@ var Application = React.createClass({
         var editorSize = {x: this.state.size.x, y: this.state.editorSize || 100};
         var nameComponent = <span onClick={this.showNameEditor.bind(this, true)}>{this.state.name}</span>
         if(this.state.editName){
-            nameComponent = <input valueLink={this.linkState('name')} ref="nameEditor" onBlur={this.showNameEditor.bind(this, false)} />
+            nameComponent = <input className="form-control input-sm" valueLink={this.linkState('name')} ref="nameEditor" onBlur={this.showNameEditor.bind(this, false)} />
         }
 
         return <div className="container-fluid">
             <h1 className="page-header page-header-main">{nameComponent}</h1>
 
-            <InspectorBox layerData={this.state.layerData} size={this.state.size} editorSize={this.state.editorSize}
-            onChange={this.onChange}
+            <InspectorBox appState={this.state}
+            onLayerDataChange={this.onLayerDataChange}
             onSizeChanged={this.changeSize}
             onEditorSizeChange={this.onEditorSizeChange}
             />
@@ -230,7 +240,7 @@ var Application = React.createClass({
                 <div>
                     <Renderer layers={this.state.layerData.layers} size={this.state.size}></Renderer>
                 </div>
-                <LayerLinesEditor canSelect={this.state.selectInLayerEditor} layerData={this.state.layerData} onChange={this.onChange} size={editorSize} />
+                <LayerLinesEditor canSelect={this.state.selectInLayerEditor} layerData={this.state.layerData} onChange={this.onLayerDataChange} size={editorSize} />
                 <br/>
                 <input type="checkbox" checkedLink={this.linkState('selectInLayerEditor')}/>
                 Allow Select

@@ -24,6 +24,42 @@ var NavBar =React.createClass({
     }
 });
 
+
+var UploadForm = React.createClass({
+    onSubmit: function () {
+        var reader = new FileReader();
+
+        reader.onload = function(evt) {
+            if(evt.target.readyState != 2) return;
+            if(evt.target.error) {
+                alert('Error while reading file');
+                return;
+            }
+
+            filecontent = evt.target.result;
+
+            var newId = "" + Math.floor(Math.random() * 1000000000);
+            var data = JSON.parse(evt.target.result);
+            data.name = data.name + " [Imported]";
+            storage.save(newId, data);
+            routie(routie.lookup('project', {id: newId}));
+        };
+
+        reader.readAsText(this.refs.file.getDOMNode().files[0]);
+    },
+
+    clickFile: function () {
+        this.refs.file.getDOMNode().click();
+    },
+
+    render: function () {
+        return <form>
+                    <button className="btn btn-default" onClick={this.clickFile}><Icon icon="floppy-open"/> Import Project</button>
+                    <input type="file" ref="file" onChange={this.onSubmit} className="hidden"/>
+               </form>
+    }
+});
+
 /**
  * Created by kajwi_000 on 2014-04-07.
  */
@@ -90,7 +126,12 @@ var ProjectPicker = React.createClass({
             page = <div className="container-fluid">
                 <h1 className="page-header page-header-main">Saved projects</h1>
                 {projectViews}
-                <hr/><a className="btn btn-default" onClick={this.createNew}>New Project</a>
+                <hr/>
+
+                    <a className="btn btn-default" onClick={this.createNew}><Icon icon="plus"/> New Project</a>
+                    <br/><br/>
+                    <UploadForm/>
+
             </div>
         }
 
