@@ -150,12 +150,20 @@ var LayerLinesEditor = React.createClass({
         }
     },
 
+    getParent: function (target, type) {
+        while(target && target.nodeName != type){
+            target = target.parentNode;
+        }
+        return target;
+    },
+
     addPoint: function (e) {
         if (!e.ctrlKey && e.shiftKey) {
             var selected = this.props.layerData.selected;
             if (selected) {
                 var newPoints = this.props.layerData.layers[selected].points.slice();
-                var p = new Point(e.pageX - e.target.offsetLeft, e.pageY - e.target.offsetTop)
+                var canvas = this.getParent(e.target, 'svg');
+                var p = new Point(e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop)
                 var s = this.props.size;
                 var is =  {x: 1/s.x, y:1/ s.y};
                 p = scalePoint(p,is);
