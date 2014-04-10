@@ -18,3 +18,11 @@ npm install
 bower install
 grunt
 ```
+
+# 0.0.2
+* Added background color
+* Default to Allow Select
+* Fixed broken Result button
+
+# 0.0.1
+Initial version
