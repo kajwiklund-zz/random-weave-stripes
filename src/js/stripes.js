@@ -7,10 +7,10 @@ var seedRandom = function (seed) {
     }
 };
 
-module.exports = function (layers, size) {
+module.exports = function (layers, size, background) {
     var result = [];
     for (var f = 0; f < size; f++) {
-        result.push("#fcfcfc");
+        result.push(background || "#fcfcfc");
     }
 
     var scale = function (p) {

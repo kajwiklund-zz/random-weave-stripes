@@ -13,6 +13,7 @@ var dummy = function () {
             y: 200
         },
         editorSize: 300,
+        selectInLayerEditor: true,
         layerData: {
             selected:1,
             layers: [
@@ -47,7 +48,9 @@ var storage = {
         try {
             var item = localStorage.getItem(projectPrefix + "-data-" + id);
             if (item) {
-                return JSON.parse(item);
+                var data = JSON.parse(item);
+                data.backgroundColor = data.backgroundColor || '#fcfcfc';
+                return data;
             }
         } catch (e) {
         }

@@ -21,7 +21,7 @@ var Renderer = React.createClass({
     },
 
     renderPoints: function (props) {
-        var result = stripes(props.layers, this.props.size.x);
+        var result = stripes(props.layers, this.props.size.x, this.props.backgroundColor);
 
         var ctx = this.getDOMNode().getContext('2d');
 

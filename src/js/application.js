@@ -74,7 +74,7 @@ var ProjectDownloads = React.createClass({
             } : null;
         }
 
-        var result = stripes(this.props.appState.layerData.layers, this.props.appState.size.x);
+        var result = stripes(this.props.appState.layerData.layers, this.props.appState.size.x, this.props.appState.backgroundColor);
 
         var nl = "\r\n";
         var colorsArray = [];
@@ -98,7 +98,6 @@ var ProjectDownloads = React.createClass({
             data2 += (j + 1) + "=" + rgb.r + "," + rgb.g + "," + rgb.b + nl;
         }
 
-        var filename = s.replace(/[^a-z0-9]/gi, '_').toLowerCase();
         var pom = document.createElement('a');
         pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data2 + data));
         pom.setAttribute('download', this.getFileName() +"_result.txt");
@@ -166,6 +165,18 @@ var ProjectSizes = React.createClass({
 
 
 var InspectorBox = React.createClass({
+    onRandomColor: function () {
+        this.onNewColor(Rnd.color());
+    },
+
+    onColorChange: function (e) {
+        this.onNewColor(e.target.value);
+    },
+
+    onNewColor: function (v) {
+        this.props.onBackgroundColorChange(v);
+    },
+
     render: function () {
         var appState = this.props.appState;
         return <div className="inspectorBox container-fluid">
@@ -175,6 +186,19 @@ var InspectorBox = React.createClass({
                 onSizeChanged={this.props.onSizeChanged}
                 onEditorSizeChange={this.props.onEditorSizeChange}/>
 
+            <div className="row">
+                <form role="form">
+                    <div className="form-group">
+                        <h4 for="layerColor">Background color</h4>
+                        <div className="input-group">
+                            <input id="layerColor" type="text" className="form-control input-sm" value={this.props.appState.backgroundColor} onChange={this.onColorChange}/>
+                            <span className="input-group-btn">
+                                <button className="btn btn-default input-sm" type="button" onClick={this.onRandomColor}><span className="glyphicon glyphicon glyphicon-fire"></span></button>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
             <LayerList layerData={appState.layerData} size={appState.size} onChange={this.props.onLayerDataChange}/>
         </div>
     }
@@ -211,6 +235,10 @@ var Application = React.createClass({
         }
     },
 
+    onBackgroundColorChange: function (val) {
+        this.setState({backgroundColor: val});
+    },
+
     onEditorSizeChange: function (val) {
         var fixed = Math.max(10, parseInt(val) || 100);
         this.setState({editorSize: fixed});
@@ -234,11 +262,12 @@ var Application = React.createClass({
             onLayerDataChange={this.onLayerDataChange}
             onSizeChanged={this.changeSize}
             onEditorSizeChange={this.onEditorSizeChange}
+            onBackgroundColorChange={this.onBackgroundColorChange}
             />
 
             <div className="stripesAreaBox">
                 <div>
-                    <Renderer layers={this.state.layerData.layers} size={this.state.size}></Renderer>
+                    <Renderer layers={this.state.layerData.layers} size={this.state.size} backgroundColor={this.state.backgroundColor}></Renderer>
                 </div>
                 <LayerLinesEditor canSelect={this.state.selectInLayerEditor} layerData={this.state.layerData} onChange={this.onLayerDataChange} size={editorSize} />
                 <br/>
