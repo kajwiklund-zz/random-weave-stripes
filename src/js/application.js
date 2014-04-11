@@ -118,18 +118,22 @@ var ProjectDownloads = React.createClass({
         var res;
 
         sectionSplit.forEach(function (sec) {
-            if(sec.indexOf('COLOR PALETTE') == 0){
+            if(sec.indexOf('COLOR PALETTE]') == 0){
                 res += '[COLOR PALETTE]' + nl;
                 res += 'Entries=' + colorsArray.length + nl;
                 res += 'Form=RGB' + nl;
                 res += 'Range=0,255' + nl;
             }
-            else if(sec.indexOf('COLOR TABLE')== 0){
+            else if(sec.indexOf('COLOR TABLE]')== 0){
                 res += data2;
             }
-            else if(sec.indexOf('WARP COLORS')== 0){
+            else if(sec.indexOf('WARP COLORS]')== 0){
                 res += '[WARP COLORS]' + nl;
                 res+= data;
+            }
+            else if(sec.indexOf('WARP]')== 0){
+
+                res += ('[' + sec).replace(/Threads=\d*/,'Threads=' + result.length);
             }
             else {
                 res += '[' + sec;
@@ -141,6 +145,9 @@ var ProjectDownloads = React.createClass({
         pom.setAttribute('download', this.getFileName()+ "_modified_wif_"+loadWif.name+".wif");
         pom.click();
 
+    },
+    changeWif: function (e) {
+        this.setState({selectedWif: e.target.value})
     },
     getInitialState: function () {
         return {};
@@ -162,7 +169,7 @@ var ProjectDownloads = React.createClass({
                 <IconButton icon="floppy-save" title="Project" className="download-button" onClick={this.saveProject}/>
                 <IconButton icon="picture" title="Image" className="download-button" onClick={this.saveImage}/>
                 <h4>Select wif</h4>
-                <select value={selected} className="form-control h-spaced">
+                <select value={selected} className="form-control h-spaced" onChange={this.changeWif}>
                     {wifOpts}
                 </select>
                 <IconButton icon="random" title="Modify and Download" className="download-button" onClick={this.saveModifiedWif.bind(this, selected)} />
