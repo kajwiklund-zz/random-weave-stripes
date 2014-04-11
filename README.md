@@ -18,6 +18,10 @@ npm install
 bower install
 grunt
 ```
+# 0.0.3
+* Added support to modify wif files
+* Set initial random background color for new projects
+* Added support do download images
 
 # 0.0.2
 * Added background color

@@ -58,7 +58,21 @@ var ProjectDownloads = React.createClass({
         return filename;
     },
 
-    saveResult: function () {
+    saveImage: function () {
+        var pom = document.createElement('a');
+        pom.setAttribute('href', window._hack.canvas.toDataURL('image/png'));
+        pom.setAttribute('download', this.getFileName() +"_image.png");
+        pom.click();
+
+    },
+    saveProject: function () {
+        var pom = document.createElement('a');
+        pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.props.appState)));
+        pom.setAttribute('download', this.getFileName() +"_project.json");
+        pom.click();
+
+    },
+    saveModifiedWif: function (id) {
         function hexToRgb(hex) {
             // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
             var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
@@ -74,11 +88,14 @@ var ProjectDownloads = React.createClass({
             } : null;
         }
 
+        var pom = document.createElement('a');
+        var loadWif = storage.loadWif(id);
+
         var result = stripes(this.props.appState.layerData.layers, this.props.appState.size.x, this.props.appState.backgroundColor);
 
         var nl = "\r\n";
         var colorsArray = [];
-        var data = "[COLORS]" + nl;
+        var data = "";
         for (var i = 0; i < result.length; i++) {
             var color = result[i];
             var nr = colorsArray.indexOf(color);
@@ -91,30 +108,52 @@ var ProjectDownloads = React.createClass({
 
         var data2 = "[COLOR TABLE]" + nl;
 
-
         for (var j = 0; j < colorsArray.length; j++) {
             var c = colorsArray[j];
             var rgb = hexToRgb(c);
             data2 += (j + 1) + "=" + rgb.r + "," + rgb.g + "," + rgb.b + nl;
         }
 
-        var pom = document.createElement('a');
-        pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data2 + data));
-        pom.setAttribute('download', this.getFileName() +"_result.txt");
-        pom.click();
-    },
+        var sectionSplit = loadWif.data.split("[");
+        var res;
 
-    saveImage: function () {
-        alert("not implemented");
-    },
-    saveProject: function () {
-        var pom = document.createElement('a');
-        pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.props.appState)));
-        pom.setAttribute('download', this.getFileName() +"_project.json");
+        sectionSplit.forEach(function (sec) {
+            if(sec.indexOf('COLOR PALETTE') == 0){
+                res += '[COLOR PALETTE]' + nl;
+                res += 'Entries=' + colorsArray.length + nl;
+                res += 'Form=RGB' + nl;
+                res += 'Range=0,255' + nl;
+            }
+            else if(sec.indexOf('COLOR TABLE')== 0){
+                res += data2;
+            }
+            else if(sec.indexOf('WARP COLORS')== 0){
+                res += '[WARP COLORS]' + nl;
+                res+= data;
+            }
+            else {
+                res += '[' + sec;
+            }
+        });
+
+
+        pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(res));
+        pom.setAttribute('download', this.getFileName()+ "_modified_wif_"+loadWif.name+".wif");
         pom.click();
 
+    },
+    getInitialState: function () {
+        return {};
     },
     render: function () {
+        var wifs = this.props.appState.wifs || [];
+        var first = null;
+        var wifOpts = wifs.map(function (wif) {
+            first = first || wif.id;
+            return <option value={wif.id}>{wif.name}</option>
+        });
+        var selected = this.state.selectedWif || first;
+
         return <div>
             <div className="row">
                     <h4>Downloads</h4>
@@ -123,6 +162,11 @@ var ProjectDownloads = React.createClass({
                 <IconButton icon="floppy-save" title="Project" className="download-button" onClick={this.saveProject}/>
                 <IconButton icon="picture" title="Image" className="download-button" onClick={this.saveImage}/>
                 <IconButton icon="list-alt" title="Result" className="download-button" onClick={this.saveResult} />
+                <h4>Select wif</h4>
+                <select value={selected} className="form-control h-spaced">
+                    {wifOpts}
+                </select>
+                <IconButton icon="random" title="Modify and Download" className="download-button" onClick={this.saveModifiedWif.bind(this, selected)} />
             </div>
         </div>;
     }
@@ -177,16 +221,21 @@ var InspectorBox = React.createClass({
         this.props.onBackgroundColorChange(v);
     },
 
+    getInitialState: function () {
+        return {};
+    },
+
+    changeTab: function (tab) {
+        this.setState({tab: tab});
+    },
+
     render: function () {
         var appState = this.props.appState;
-        return <div className="inspectorBox container-fluid">
-            <ProjectDownloads appState={appState}/>
-            <ProjectSizes size={appState.size}
-                editorSize={appState.editorSize}
-                onSizeChanged={this.props.onSizeChanged}
-                onEditorSizeChange={this.props.onEditorSizeChange}/>
-
-            <div className="row">
+        var tab = this.state.tab||'project';
+        var tabData;
+        if(tab == 'colors'){
+            tabData = <div>
+                <div className="row">
                 <form role="form">
                     <div className="form-group">
                         <h4 for="layerColor">Background color</h4>
@@ -200,6 +249,29 @@ var InspectorBox = React.createClass({
                 </form>
             </div>
             <LayerList layerData={appState.layerData} size={appState.size} onChange={this.props.onLayerDataChange}/>
+            </div>
+
+        }
+        else{
+            tabData = <div>
+                <ProjectSizes size={appState.size}
+                editorSize={appState.editorSize}
+                onSizeChanged={this.props.onSizeChanged}
+                onEditorSizeChange={this.props.onEditorSizeChange}/>
+                <ProjectDownloads appState={appState}/>
+            </div>;
+        }
+
+
+        return <div className="inspectorBox container-fluid">
+            <div className="row">
+            <ul className="nav nav-tabs">
+                <li className={tab=='project' && 'active'}><a onClick={this.changeTab.bind(this, 'project')}>Project</a></li>
+                <li className={tab=='colors' && 'active'}><a onClick={this.changeTab.bind(this, 'colors')}>Colors</a></li>
+
+            </ul>
+            </div>
+            {tabData}
         </div>
     }
 });
@@ -223,6 +295,8 @@ var Application = React.createClass({
     },
 
     componentDidUpdate: function () {
+        var copy = _.clone(this.state);
+        delete copy.wifs;
         storage.save(this.props.id, this.state);
         if(this.state.editName){
             var nameEditor = this.refs.nameEditor;
@@ -246,6 +320,9 @@ var Application = React.createClass({
 
     showNameEditor: function (show) {
         this.setState({editName: show });
+    },
+    componentDidMount: function () {
+        this.setState({wifs: storage.listWifs()});
     },
 
     render: function () {

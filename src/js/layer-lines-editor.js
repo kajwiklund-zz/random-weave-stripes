@@ -190,7 +190,7 @@ var LayerLinesEditor = React.createClass({
             }
 
             var scaledPoints = scalePoints(layer.points, this.props.size);
-            return <SingleLineEditor size={s} color={layer.color} markColor={markColor} markSize={markSize}  points={scaledPoints} onChange={this.onLineChange.bind(this, i)} onPointTouch={this.onPointTouch.bind(this, i)}/>;
+            return <SingleLineEditor  size={s} color={layer.color} markColor={markColor} markSize={markSize}  points={scaledPoints} onChange={this.onLineChange.bind(this, i)} onPointTouch={this.onPointTouch.bind(this, i)}/>;
         }.bind(this));
 
 

@@ -17,6 +17,8 @@ var Renderer = React.createClass({
 //    },
 
     componentDidUpdate: function (props) {
+        window._hack = window._hack||{};
+        window._hack.canvas = this.getDOMNode();
         this.renderPoints(this.props);
     },
 
