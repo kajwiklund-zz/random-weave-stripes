@@ -7,6 +7,7 @@ var storage = require('./storage');
 var UploadWifForm = React.createClass({
     onSubmit: function () {
         var reader = new FileReader();
+        var name;
 
         reader.onload = function(evt) {
             if(evt.target.readyState != 2) return;
@@ -18,11 +19,13 @@ var UploadWifForm = React.createClass({
             filecontent = evt.target.result;
             var newId = "" + Math.floor(Math.random() * 1000000000);
 
-            storage.saveWif({id: newId, name: "some name"}, filecontent);
+            storage.saveWif({id: newId, name: name}, filecontent);
             this.props.onUpload();
         }.bind(this);
 
-        reader.readAsText(this.refs.file.getDOMNode().files[0]);
+        var file = this.refs.file.getDOMNode().files[0];
+        name = file.name.replace(".wif","");
+        reader.readAsText(file);
     },
 
     clickFile: function () {
