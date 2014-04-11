@@ -161,7 +161,6 @@ var ProjectDownloads = React.createClass({
             <div className="row">
                 <IconButton icon="floppy-save" title="Project" className="download-button" onClick={this.saveProject}/>
                 <IconButton icon="picture" title="Image" className="download-button" onClick={this.saveImage}/>
-                <IconButton icon="list-alt" title="Result" className="download-button" onClick={this.saveResult} />
                 <h4>Select wif</h4>
                 <select value={selected} className="form-control h-spaced">
                     {wifOpts}
@@ -222,10 +221,11 @@ var InspectorBox = React.createClass({
     },
 
     getInitialState: function () {
-        return {};
+        return {tab: storage.getOpenTab()};
     },
 
     changeTab: function (tab) {
+        storage.setOpenTab(tab);
         this.setState({tab: tab});
     },
 

@@ -35,7 +35,7 @@ var dummy = function () {
 var projectPrefix = "random-weave-";
 var storage = {
     save: function (id, data) {
-        var result = stripes(data.layerData.layers, data.size.x);
+        var result = stripes(data.layerData.layers, data.size.x, data.backgroundColor);
         var desc = {
                 id: id,
                 name: data.name,
@@ -108,8 +108,14 @@ var storage = {
         }
 
         return wifs;
-    }
+    },
 
+    getOpenTab: function () {
+        return localStorage.getItem(projectPrefix + "-open-tab");
+    },
+    setOpenTab: function (tab) {
+        localStorage.setItem(projectPrefix + "-open-tab", tab);
+    }
 };
 
 module.exports= storage;

@@ -19,7 +19,12 @@ bower install
 grunt
 ```
 
-# 0.0.3
+# 0.0.5
+* Remember open tab
+* Preview uses background color
+* Removed old results button
+
+# 0.0.4
 * Use filename for initial wif name
 
 # 0.0.3
