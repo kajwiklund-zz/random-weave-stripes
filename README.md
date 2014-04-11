@@ -19,6 +19,10 @@ bower install
 grunt
 ```
 
+# 0.0.6
+* Fixed so you can change wif.
+* Fixed so it modifies the Threads in the warp in the wif
+
 # 0.0.5
 * Remember open tab
 * Preview uses background color
