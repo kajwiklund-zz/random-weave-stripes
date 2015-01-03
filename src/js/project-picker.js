@@ -2,6 +2,7 @@
 
 
 var Application = require('./application');
+var Stripifier = require('./stripifier/stripifier');
 var ResultRenderer = require('./result-renderer');
 var WifEditor = require('./wif-editor');
 var WifList = require('./wif-list');
@@ -9,10 +10,11 @@ var Icon = require('./bootstrap/icon');
 var storage = require('./storage');
 
 
-var NavBar =React.createClass({
+var NavBar = React.createClass({
     render: function () {
         var proActive = this.props.page == 'projects'?'active':'';
         var wifActive = this.props.page == 'wifs'?'active':'';
+        var stripifierActive = this.props.page == 'stripifier'?'active':'';
         return <nav className="navbar navbar-default" role="navigation">
             <div className="container-fluid">
                 <div className="navbar-header">
@@ -25,6 +27,9 @@ var NavBar =React.createClass({
                 </ul>
                 <ul className="nav navbar-nav">
                     <li className={wifActive}><a href="#wifs">Wifs</a></li>
+                </ul>
+                <ul className="nav navbar-nav">
+                    <li className={stripifierActive}><a href="#stripifier">Image Stripifier</a></li>
                 </ul>
             </div>
         </nav>
@@ -86,6 +91,10 @@ var ProjectPicker = React.createClass({
     },
 
     componentDidMount: function () {
+        routie('stripifier stripifier', function (id) {
+            this.setState({pageGroup: 'stripifier', page: 'stripifier', id: id});
+        }.bind(this));
+
         routie('wif wif/:id', function (id) {
             this.setState({pageGroup: 'wifs', page: 'wif', id: id});
         }.bind(this));
@@ -122,6 +131,9 @@ var ProjectPicker = React.createClass({
         }
         else if (this.state.page == 'wifs') {
             page = <WifList/>
+        }
+        else if (this.state.page == 'stripifier') {
+            page = <Stripifier/>
         }
         else {
 

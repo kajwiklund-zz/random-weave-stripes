@@ -19,6 +19,9 @@ bower install
 grunt
 ```
 
+# 0.0.7
+* Added simple Image Stripifier
+
 # 0.0.6
 * Fixed so you can change wif.
 * Fixed so it modifies the Threads in the warp in the wif
@@ -43,3 +46,4 @@ grunt
 
 # 0.0.1
 Initial version
+

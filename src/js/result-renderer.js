@@ -23,7 +23,11 @@ var Renderer = React.createClass({
     renderPoints: function (props) {
         var result = props.result;
 
-        var ctx = this.getDOMNode().getContext('2d');
+        var canvas = this.getDOMNode();
+        var ctx = canvas.getContext('2d');
+        if(this.props.hack) {
+            window[this.props.hack] = canvas;
+        }
 
         var size= this.props.size;
         ctx.fillStyle = 'pink';
@@ -36,7 +40,6 @@ var Renderer = React.createClass({
     },
 
     render: function () {
-
         return  <canvas width={this.props.result.length} height={this.props.height}></canvas>
     }
 });
