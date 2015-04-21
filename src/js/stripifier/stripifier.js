@@ -41,6 +41,42 @@ var UploadForm = React.createClass({
     }
 });
 
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+}
+
+function hexToRgbStr(hex) {
+    var result = hexToRgb(hex);
+    return result?[result.r,result.g,result.b].join(","):null
+}
+
+var TextResultDisplay = React.createClass({
+    render: function () {
+        var colorsArray = [];
+
+        var colorsText =  "[COLORS]\n" + this.props.result.map(function (r, i) {
+            var nr = colorsArray.indexOf(r);
+            if(nr < 0){
+                colorsArray.push(r);
+                nr = colorsArray.length - 1;
+            }
+            return (i + 1) + "=" + (nr + 1);
+
+        }).join("\n");
+        //text += JSON.stringify(this.props.result);
+
+        var tableText = "[COLOR TABLE]\n" + colorsArray.map(function (c, i) {
+                return (i + 1) + "=" + hexToRgbStr(c);
+            }).join("\n");
+
+        return <textarea col="100" rows={this.props.result.length + colorsArray.length + 4} value={tableText + "\n\n" +colorsText}/>
+    }
+});
 
 
 var Stripifier = React.createClass({
@@ -75,6 +111,10 @@ var Stripifier = React.createClass({
         pom.click();
     },
 
+    imageWidthChanged: function (width) {
+        this.onWidthChange(width);
+    },
+
     render: function () {
         var inputStyle = {width: 300};
 
@@ -92,12 +132,16 @@ var Stripifier = React.createClass({
                 </div>
 
             <div>
-                <Extractor width={this.state.width} height={this.state.height} imageURL={this.state.imageURL} resultChanged={this.resultChanged}/>
+                <Extractor width={this.state.width} height={this.state.height} imageURL={this.state.imageURL} resultChanged={this.resultChanged} onImageWidth={this.imageWidthChanged}/>
             </div>
             <ResultRenderer result={this.state.result} height={this.state.output} hack="_hack_strip"/>
+
             <div>
                 <IconButton icon="picture" title="Save" className="download-button" onClick={this.saveImage}/>
+                <br/>
+                <IconButton icon="list" title="Color data" className="download-button" onClick={this.showData}/>
             </div>
+            <TextResultDisplay result={this.state.result} />
         </div>
     }
 });

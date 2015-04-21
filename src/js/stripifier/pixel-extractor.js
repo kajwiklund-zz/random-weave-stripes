@@ -40,6 +40,7 @@ var Renderer = React.createClass({
             var imageObj = new Image();
 
             imageObj.onload = function() {
+                this.props.onImageWidth(imageObj.width);
                 ctx.drawImage(imageObj, 0, 0, props.width, props.height);
                 this.extract(props.height-1);
             }.bind(this);

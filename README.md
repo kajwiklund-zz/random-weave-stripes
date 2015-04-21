@@ -19,6 +19,9 @@ bower install
 grunt
 ```
 
+# 0.0.8
+* Stripifier makes color wif data available for copy paste.
+
 # 0.0.7
 * Added simple Image Stripifier
 
