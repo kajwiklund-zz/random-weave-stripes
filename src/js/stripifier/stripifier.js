@@ -89,7 +89,7 @@ var Stripifier = React.createClass({
         this.setState({result: result});
     },
     onImageLoad: function (imageURL) {
-        this.setState({imageURL: imageURL});
+        this.setState({imageURL: imageURL, widthReceived: false});
     },
 
     onWidthChange: function (v) {
@@ -112,7 +112,10 @@ var Stripifier = React.createClass({
     },
 
     imageWidthChanged: function (width) {
-        this.onWidthChange(width);
+        if(!this.state.widthReceived){
+            this.setState({widthReceived: true});
+            this.onWidthChange(width);
+        }
     },
 
     render: function () {
